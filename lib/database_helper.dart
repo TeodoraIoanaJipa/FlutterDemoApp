@@ -1,7 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:foodzzz/model/reservation.dart';
 import 'package:foodzzz/model/restaurant.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
@@ -29,12 +33,18 @@ class DatabaseHelper {
   }
 
   Future<Database> initializeDatabase() async {
-    String path = 'foodzzzz.db';
+    String path = 'foodZZZ.db';
 
-    return await openDatabase(path, version: 2, onCreate: _createDb);
+    return await openDatabase(path, version: 1, onCreate: _createDb);
+  }
+
+  Future<String> loadAsset() async {
+    return await rootBundle.loadString('assets/insertRestaurants.txt');
   }
 
   void _createDb(Database db, int newVersion) async {
+    var content = await loadAsset();
+
     await db.execute(
       'CREATE TABLE $restaurantsTableName(id INTEGER PRIMARY KEY, name TEXT, ' +
           'description TEXT, opening_time TEXT, closing_time TEXT, price_category TEXT, ' +
@@ -44,27 +54,28 @@ class DatabaseHelper {
     await db.execute(
         'CREATE TABLE $reservationsTableName(id INTEGER PRIMARY KEY, number_of_persons INTEGER, reservation_date TEXT, reservation_hour TEXT, requested_date TEXT, restaurant_id INTEGER, user_id INTEGER);');
 
-    await db.execute(
-      'INSERT INTO restaurants(id, name, description, opening_time, closing_time, price_category, image_link, address, latitude, longitude) ' +
-          ' VALUES( 0, "Restaurant Pescăruș", "Restaurantul Pescăruș s-a primenit cu o amenajare interioară nouă, ' +
-          'cu un Chef nou și evident cu un nou meniu. Celebrul arhitect și designer, Mihai Popescu, a acceptat provocarea' +
-          ' de a regândi spațiul interior al restaurantului.", ' +
-          ' "10:00", "22:00", "Moderat", "https://d2fdt3nym3n14p.cloudfront.net/venue/449/gallery/12289/conversions/817C0399-1-big.jpg", ' +
-          '" Aleea Pescăruș , Herãstrãu", 44.47250818364475, 26.084901117601483), ' +
-          '(1, "Osteria Zucca", " Pe terasă sunt de 38 de locuri. Materia prima este importata din Italia, inclusiv făină pentru pizza. Noi gătim exclusiv cu ulei de masline extravirgin de o calitate superioară.", ' +
-          ' "11:30", "22:00", "Moderat", "https://d2fdt3nym3n14p.cloudfront.net/venue/1649/gallery/3695/conversions/15-big.jpg", ' +
-          '" Strada Jean Louis Calderon 41, Universitate", 44.44026382628535, 26.104348535200938),' +
-          '(2, "Hanul lui Manuc", "Hanul lui Manuc este o clădire veche din București, important obiectiv turistic și monument istoric.", ' +
-          '"08:00", "20:00", "Moderat", "https://www.hanumanucrestaurant.ro/storage/app/media/despre-noi-listare.jpg", ' +
-          '" Franceză 62-64, Centrul Vechi", 44.42963169295857, 26.1023338062684),' +
-          '(3, "Aria TNB", "O poveste culturală teatrală care se prelungește pe terasa Teatrului Național cu o bucătărie internațională' +
-          ' aleasă și un bar impresionat, Aria TNB oferă una dintre cele mai spectaculoase priveliști asupra capitalei",' +
-          '"12:00", "00:00", "Moderat", ' +
-          '"https://www.aria-tnb.ro/gallery_new/aria_13.jpg", "Bulevardul Nicolae Bălcescu 2, Universitate", 44.43606401459687, 26.103829741772408),' +
-          '(4, "Primus Pub", "Primus Pub împacă atmosfera de bar cu cea de restaurant, oferindu-ți o gamă largă de opțiuni pentru băuturi alcoolice și non-alcoolice, dar și o varietate de preparate culinare de la breakfast și sandwichuri până la specialități din bucătăria românească și internațională.",' +
-          '"09:00", "00:00", "Accesibil", ' +
-          '"https://d2fdt3nym3n14p.cloudfront.net/venue/69/gallery/711/conversions/primus_food_more-big.jpg", "Strada George Enescu 3, Piața Romană", 44.42963169295857, 26.1023338062684);',
-    );
+    // await db.execute(
+    //   'INSERT INTO restaurants(id, name, description, opening_time, closing_time, price_category, image_link, address, latitude, longitude) ' +
+    //       ' VALUES( 0, "Restaurant Pescăruș", "Restaurantul Pescăruș s-a primenit cu o amenajare interioară nouă, ' +
+    //       'cu un Chef nou și evident cu un nou meniu. Celebrul arhitect și designer, Mihai Popescu, a acceptat provocarea' +
+    //       ' de a regândi spațiul interior al restaurantului.", ' +
+    //       ' "10:00", "22:00", "Moderat", "https://d2fdt3nym3n14p.cloudfront.net/venue/449/gallery/12289/conversions/817C0399-1-big.jpg", ' +
+    //       '" Aleea Pescăruș , Herãstrãu", 44.47250818364475, 26.084901117601483), ' +
+    //       '(1, "Osteria Zucca", " Pe terasă sunt de 38 de locuri. Materia prima este importata din Italia, inclusiv făină pentru pizza. Noi gătim exclusiv cu ulei de masline extravirgin de o calitate superioară.", ' +
+    //       ' "11:30", "22:00", "Moderat", "https://d2fdt3nym3n14p.cloudfront.net/venue/1649/gallery/3695/conversions/15-big.jpg", ' +
+    //       '" Strada Jean Louis Calderon 41, Universitate", 44.44026382628535, 26.104348535200938),' +
+    //       '(2, "Hanul lui Manuc", "Hanul lui Manuc este o clădire veche din București, important obiectiv turistic și monument istoric.", ' +
+    //       '"08:00", "20:00", "Moderat", "https://www.hanumanucrestaurant.ro/storage/app/media/despre-noi-listare.jpg", ' +
+    //       '" Franceză 62-64, Centrul Vechi", 44.42963169295857, 26.1023338062684),' +
+    //       '(3, "Aria TNB", "O poveste culturală teatrală care se prelungește pe terasa Teatrului Național cu o bucătărie internațională' +
+    //       ' aleasă și un bar impresionat, Aria TNB oferă una dintre cele mai spectaculoase priveliști asupra capitalei",' +
+    //       '"12:00", "00:00", "Moderat", ' +
+    //       '"https://www.aria-tnb.ro/gallery_new/aria_13.jpg", "Bulevardul Nicolae Bălcescu 2, Universitate", 44.43606401459687, 26.103829741772408),' +
+    //       '(4, "Primus Pub", "Primus Pub împacă atmosfera de bar cu cea de restaurant, oferindu-ți o gamă largă de opțiuni pentru băuturi alcoolice și non-alcoolice, dar și o varietate de preparate culinare de la breakfast și sandwichuri până la specialități din bucătăria românească și internațională.",' +
+    //       '"09:00", "00:00", "Accesibil", ' +
+    //       '"https://d2fdt3nym3n14p.cloudfront.net/venue/69/gallery/711/conversions/primus_food_more-big.jpg", "Strada George Enescu 3, Piața Romană", 44.42963169295857, 26.1023338062684);',
+    // );
+    await db.execute(content);
   }
 
   Future<List<Map<String, dynamic>>> getRestaurantsList() async {
@@ -106,7 +117,7 @@ class DatabaseHelper {
     List<Map<String, dynamic>> x =
         await db.rawQuery('SELECT COUNT (*) from $reservationsTableName');
     int result = Sqflite.firstIntValue(x)!;
-    return 0;
+    return result;
   }
 
   Future<List<Restaurant>> getRestaurants() async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:auto_size_text/auto_size_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:foodzzz/maps-location.dart';
@@ -9,7 +10,7 @@ class RestaurantDetailsPage extends StatelessWidget {
   final Restaurant restaurant;
 
   final String buttonText = "Rezervă o masă";
-  final String hexaDarkRed = "#b41700";
+
   static Color darkRedColor =
       Color(int.parse("#b41700".replaceAll('#', '0xff')));
 
@@ -20,21 +21,31 @@ class RestaurantDetailsPage extends StatelessWidget {
       child: new Row(
         children: <Widget>[
           new Icon(Icons.location_on, color: darkRedColor),
-          new Text(restaurant.address, style: TextStyle(color: darkRedColor))
+          new Text(
+            restaurant.address,
+            maxLines: 2,
+            style: GoogleFonts.libreBaskerville(
+              color: darkRedColor,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          )
         ],
       ),
     );
   }
 
   Widget getDetailsText(BuildContext context) {
-    var restaurantName = Text(
+    var restaurantName = Flexible(
+        child: Text(
       restaurant.name,
+      maxLines: 2,
       style: GoogleFonts.libreBaskerville(
         color: Colors.black,
         fontSize: 30.0,
         fontWeight: FontWeight.bold,
       ),
-    );
+    ));
 
     return Column(
       children: <Widget>[
@@ -57,8 +68,8 @@ class RestaurantDetailsPage extends StatelessWidget {
             thickness: 2,
           ),
         ),
-        Row(
-          children: [getAddress(context, restaurant)],
+        Container(
+          child: getAddress(context, restaurant),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -117,7 +128,7 @@ class RestaurantDetailsPage extends StatelessWidget {
   Widget _infoContent(BuildContext context) {
     return Container(
       height: 150,
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      padding: EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width * 0.9,
       child: Center(
         child: getDetailsText(context),
@@ -126,13 +137,11 @@ class RestaurantDetailsPage extends StatelessWidget {
   }
 
   Widget _descriptionContent(BuildContext context) {
-    String darkRed = hexaDarkRed.replaceAll('#', '0xff');
-
     final descriptionText = Padding(
       child: Text(
         restaurant.description,
         textAlign: TextAlign.justify,
-        style: GoogleFonts.libreBaskerville(fontSize: 18.0),
+        style: GoogleFonts.libreBaskerville(fontSize: 13.0),
       ),
       padding: EdgeInsets.all(15.0),
     );
@@ -156,7 +165,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                         selectedRestaurant: restaurant,
                       )));
         },
-        color: Color(int.parse(darkRed)),
+        color: darkRedColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0),
         ),
@@ -191,15 +200,25 @@ class RestaurantDetailsPage extends StatelessWidget {
     return Scaffold(
       body: Container(
           padding: EdgeInsets.all(0),
-          child: new SingleChildScrollView(
-              child: new Column(
-            children: <Widget>[
-              _restaurantImage(context),
-              _infoContent(context),
-              _descriptionContent(context),
-              _mapsLocation(),
+          child: new CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                expandedHeight: 220,
+                backgroundColor: Colors.black,
+                flexibleSpace: FlexibleSpaceBar(
+                  background:
+                      Image.network(restaurant.imageLink, fit: BoxFit.cover),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  _infoContent(context),
+                  _descriptionContent(context),
+                  _mapsLocation(),
+                ]),
+              )
             ],
-          ))),
+          )),
     );
   }
 }

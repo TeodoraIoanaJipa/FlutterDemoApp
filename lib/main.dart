@@ -110,7 +110,7 @@ class _RestaurntsListState extends State<RestaurantsList> {
               image: NetworkImage(restaurant.imageLink),
             ))),
         Container(
-            margin: EdgeInsets.all(5.0),
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: Row(
               children: <Widget>[
                 Text(
@@ -125,7 +125,9 @@ class _RestaurntsListState extends State<RestaurantsList> {
                 _iconsRow(alreadyFavorite, restaurant)
               ],
             )),
-        Container(child: RestaurantDetailsPage.getAddress(context, restaurant))
+        Container(
+            margin: EdgeInsets.all(10),
+            child: RestaurantDetailsPage.getAddress(context, restaurant))
       ],
     ));
   }

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class Restaurant {
   int id;

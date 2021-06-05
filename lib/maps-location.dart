@@ -46,15 +46,4 @@ class MapsRestaurantLocationState extends State<MapsRestaurantLocation> {
     );
   }
 
-  Future<void> _goToTheLake() async {
-    final CameraPosition _kLake = CameraPosition(
-        bearing: 192.8334901395799,
-        target: LatLng(double.parse(latitude.toString()),
-            double.parse(longitude.toString())),
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414);
-
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
 }
