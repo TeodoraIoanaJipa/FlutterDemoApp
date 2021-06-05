@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:foodzzz/maps-location.dart';
 import 'package:foodzzz/model/restaurant.dart';
 import 'package:foodzzz/reservation_page.dart';
+
 
 class RestaurantDetailsPage extends StatelessWidget {
   final Restaurant restaurant;
 
   final String buttonText = "Rezervă o masă";
   final String hexaDarkRed = "#b41700";
+  Color darkRedColor = Color(int.parse("#b41700".replaceAll('#', '0xff')));
 
   RestaurantDetailsPage({Key? key, required this.restaurant}) : super(key: key);
 
-  Widget _getAddress() {
-    Color darkRedColor = Color(int.parse(hexaDarkRed.replaceAll('#', '0xff')));
-
+  Widget _getAddress(BuildContext context) {
     return Container(
+        child: GestureDetector(
       child: new Row(
         children: <Widget>[
           new Icon(Icons.location_on, color: darkRedColor),
           new Text(restaurant.address, style: TextStyle(color: darkRedColor))
         ],
       ),
-    );
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MapsRestaurantLocation()));
+      },
+    ));
   }
 
-  Widget getDetailsText() {
+  Widget getDetailsText(BuildContext context) {
     String color = hexaDarkRed.replaceAll('#', '0xff');
     Color darkRedColor = Color(int.parse(color));
 
@@ -53,7 +59,7 @@ class RestaurantDetailsPage extends StatelessWidget {
           ),
         ),
         Row(
-          children: [_getAddress()],
+          children: [_getAddress(context)],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -112,13 +118,13 @@ class RestaurantDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _middleContent(BuildContext context) {
+  Widget _infoContent(BuildContext context) {
     return Container(
       height: 150,
       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
       width: MediaQuery.of(context).size.width * 0.9,
       child: Center(
-        child: getDetailsText(),
+        child: getDetailsText(context),
       ),
     );
   }
@@ -149,7 +155,9 @@ class RestaurantDetailsPage extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ReservationPage(selectedRestaurant: restaurant,)));
+                  builder: (context) => ReservationPage(
+                        selectedRestaurant: restaurant,
+                      )));
         },
         color: Color(int.parse(darkRed)),
         shape: RoundedRectangleBorder(
@@ -172,18 +180,17 @@ class RestaurantDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageContent = _restaurantImage(context);
-
-    final middleContent = _middleContent(context);
-
-    final descriptionContent = _descriptionContent(context);
-
     return Scaffold(
       body: Container(
           padding: EdgeInsets.all(0),
           child: new SingleChildScrollView(
               child: new Column(
-            children: <Widget>[imageContent, middleContent, descriptionContent],
+            children: <Widget>[
+              _restaurantImage(context),
+              _infoContent(context),
+              _descriptionContent(context),
+              // _mapsLocation(context)
+            ],
           ))),
     );
   }
