@@ -1,65 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:foodzzz/maps-location.dart';
 import 'package:foodzzz/model/restaurant.dart';
 import 'package:foodzzz/reservation_page.dart';
-
 
 class RestaurantDetailsPage extends StatelessWidget {
   final Restaurant restaurant;
 
   final String buttonText = "Rezervă o masă";
   final String hexaDarkRed = "#b41700";
-  Color darkRedColor = Color(int.parse("#b41700".replaceAll('#', '0xff')));
+  static Color darkRedColor =
+      Color(int.parse("#b41700".replaceAll('#', '0xff')));
 
   RestaurantDetailsPage({Key? key, required this.restaurant}) : super(key: key);
 
-  Widget _getAddress(BuildContext context) {
+  static Widget getAddress(BuildContext context, Restaurant restaurant) {
     return Container(
-        child: GestureDetector(
       child: new Row(
         children: <Widget>[
           new Icon(Icons.location_on, color: darkRedColor),
           new Text(restaurant.address, style: TextStyle(color: darkRedColor))
         ],
       ),
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MapsRestaurantLocation()));
-      },
-    ));
+    );
   }
 
   Widget getDetailsText(BuildContext context) {
-    String color = hexaDarkRed.replaceAll('#', '0xff');
-    Color darkRedColor = Color(int.parse(color));
-
     var restaurantName = Text(
       restaurant.name,
-      style: TextStyle(
-          color: Colors.black, fontSize: 28.0, fontWeight: FontWeight.bold),
+      style: GoogleFonts.libreBaskerville(
+        color: Colors.black,
+        fontSize: 30.0,
+        fontWeight: FontWeight.bold,
+      ),
     );
 
     return Column(
       children: <Widget>[
         Row(
           children: [
-            Icon(
-              Icons.fastfood_rounded,
-              color: Colors.black,
-              size: 40.0,
-            ),
+            Container(
+                margin: EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  Icons.fastfood_rounded,
+                  color: Colors.black,
+                  size: 40.0,
+                )),
             restaurantName
           ],
         ),
         Container(
-          width: 200.0,
+          width: 220.0,
           child: new Divider(
             color: darkRedColor,
             thickness: 2,
           ),
         ),
         Row(
-          children: [_getAddress(context)],
+          children: [getAddress(context, restaurant)],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -80,9 +79,6 @@ class RestaurantDetailsPage extends StatelessWidget {
             Expanded(
                 flex: 3,
                 child: Container(
-                  decoration: new BoxDecoration(
-                      border: new Border.all(color: Colors.red.shade100),
-                      borderRadius: BorderRadius.circular(5.0)),
                   child: new Text(
                     "\$" + restaurant.priceCategory,
                     style: TextStyle(color: darkRedColor),
@@ -98,7 +94,7 @@ class RestaurantDetailsPage extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Container(
-            margin: EdgeInsets.only(bottom: 10.0),
+            margin: EdgeInsets.only(bottom: 15.0),
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: new BoxDecoration(
                 image: DecorationImage(
@@ -135,14 +131,15 @@ class RestaurantDetailsPage extends StatelessWidget {
     final descriptionText = Padding(
       child: Text(
         restaurant.description,
-        style: TextStyle(fontSize: 18.0),
+        textAlign: TextAlign.justify,
+        style: GoogleFonts.libreBaskerville(fontSize: 18.0),
       ),
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(15.0),
     );
 
     final reservationButton = Container(
       margin: EdgeInsets.only(top: 10.0),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
       width: double.infinity,
       child: RaisedButton(
         child: Text(
@@ -167,14 +164,25 @@ class RestaurantDetailsPage extends StatelessWidget {
     );
 
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height: MediaQuery.of(context).size.height * 0.5,
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(12.0),
+      padding: EdgeInsets.all(12),
       child: Center(
         child: Column(
           children: <Widget>[descriptionText, reservationButton],
         ),
       ),
+    );
+  }
+
+  Widget _mapsLocation() {
+    return Container(
+      height: 300,
+      width: 400,
+      margin: EdgeInsets.only(bottom: 20.0),
+      alignment: Alignment.center,
+      child: MapsRestaurantLocation(
+          latitude: restaurant.latitude, longitude: restaurant.longitude),
     );
   }
 
@@ -189,7 +197,7 @@ class RestaurantDetailsPage extends StatelessWidget {
               _restaurantImage(context),
               _infoContent(context),
               _descriptionContent(context),
-              // _mapsLocation(context)
+              _mapsLocation(),
             ],
           ))),
     );

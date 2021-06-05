@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodzzz/database_helper.dart';
-import 'package:foodzzz/model/dog.dart';
 import 'package:foodzzz/model/reservation.dart';
 import 'package:foodzzz/model/restaurant.dart';
 import 'package:foodzzz/restaurant_detail_page.dart';
@@ -8,35 +7,36 @@ import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as Path;
 
 void main() async {
   WidgetsFlutterBinding
       .ensureInitialized(); // Avoid errors caused by flutter upgrade
-  runApp(MyApp());
+  runApp(FoodZApp());
 }
 
-class MyApp extends StatelessWidget {
+class FoodZApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'FoodZzz',
-      home: new ListWords(),
+      home: new RestaurantsList(),
     );
   }
 }
 
-class ListWords extends StatefulWidget {
+class RestaurantsList extends StatefulWidget {
   @override
   _RestaurntsListState createState() => _RestaurntsListState();
 }
 
-class _RestaurntsListState extends State<ListWords> {
+class _RestaurntsListState extends State<RestaurantsList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   var restaurantsList = <Restaurant>[];
   var count;
   var favoriteRestaurants = <Restaurant>[];
-  final _biggerFont = TextStyle(fontSize: 18.0);
+  final _biggerFont = TextStyle(fontSize: 26.0);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _RestaurntsListState extends State<ListWords> {
           new IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
         ],
       ),
-      body: _buildList(),
+      body: _buildList(context),
     );
   }
 
@@ -64,10 +64,21 @@ class _RestaurntsListState extends State<ListWords> {
     return Wrap(
       spacing: 12,
       children: <Widget>[
-        Icon(
-          favorite ? Icons.favorite : Icons.favorite_border,
-          color: favorite ? Colors.red.shade900 : null,
-          size: 30,
+        GestureDetector(
+          child: Icon(
+            favorite ? Icons.favorite : Icons.favorite_border,
+            color: favorite ? Colors.red.shade900 : null,
+            size: 26,
+          ),
+          onTap: () {
+            setState(() {
+              if (favorite) {
+                favoriteRestaurants.remove(restaurant);
+              } else {
+                favoriteRestaurants.add(restaurant);
+              }
+            });
+          },
         ),
         GestureDetector(
           child:
@@ -84,33 +95,46 @@ class _RestaurntsListState extends State<ListWords> {
     );
   }
 
-  Widget _buildRow(Restaurant restaurant) {
+  Widget _buildRow(BuildContext context, Restaurant restaurant) {
     final alreadyFavorite = favoriteRestaurants.contains(restaurant);
 
-    return ListTile(
-        title: Text(
-          restaurant.name,
-          style: _biggerFont,
-        ),
-        leading: Image.network(restaurant.imageLink),
-        trailing: _iconsRow(alreadyFavorite, restaurant),
-        onTap: () {
-          setState(() {
-            if (alreadyFavorite) {
-              favoriteRestaurants.remove(restaurant);
-            } else {
-              favoriteRestaurants.add(restaurant);
-            }
-          });
-        },
-        minLeadingWidth: 80);
+    return Card(
+        child: new Column(
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.only(bottom: 15.0),
+            height: MediaQuery.of(context).size.height * 0.3,
+            decoration: new BoxDecoration(
+                image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(restaurant.imageLink),
+            ))),
+        Container(
+            margin: EdgeInsets.all(5.0),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  restaurant.name,
+                  textAlign: TextAlign.end,
+                  style: GoogleFonts.libreBaskerville(
+                    fontSize: 26.0,
+                    color: Colors.black,
+                  ),
+                ),
+                Spacer(),
+                _iconsRow(alreadyFavorite, restaurant)
+              ],
+            )),
+        Container(child: RestaurantDetailsPage.getAddress(context, restaurant))
+      ],
+    ));
   }
 
-  Widget _buildList() {
+  Widget _buildList(BuildContext context) {
     return ListView.separated(
         itemCount: restaurantsList.length,
         itemBuilder: (context, index) {
-          return _buildRow(restaurantsList[index]);
+          return _buildRow(context, restaurantsList[index]);
         },
         separatorBuilder: (context, index) {
           return Divider();

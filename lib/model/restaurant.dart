@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class Restaurant {
   int id;
   String name;
@@ -7,17 +9,20 @@ class Restaurant {
   String priceCategory;
   String imageLink;
   String address;
+  double latitude;
+  double longitude;
 
-  Restaurant({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.openingTime,
-    required this.closingTime,
-    required this.priceCategory,
-    required this.imageLink,
-    required this.address
-  });
+  Restaurant(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.openingTime,
+      required this.closingTime,
+      required this.priceCategory,
+      required this.imageLink,
+      required this.address,
+      required this.latitude,
+      required this.longitude});
 
   int get getId {
     return id;
@@ -44,7 +49,9 @@ class Restaurant {
       'closingTime': closingTime,
       'priceCategory': priceCategory,
       'imageLink': imageLink,
-      'address': address
+      'address': address,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 
@@ -57,7 +64,9 @@ class Restaurant {
         closingTime: map['closing_time'],
         priceCategory: map['price_category'],
         imageLink: map['image_link'],
-        address: map['address']);
+        address: map['address'],
+        latitude: map['latitude'],
+        longitude: map['longitude']);
   }
 
   @override
