@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "464019033663",
+    "project_id": "reservationsflutter",
+    "storage_bucket": "reservationsflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464019033663:android:20163fc73b6465b431728a",
+        "android_client_info": {
+          "package_name": "com.example.foodzzz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464019033663-2oeuqi4jfc6i2q2gtrp0uaq68q79oj26.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodzzz",
+            "certificate_hash": "dcd855e813263c33816bbf09a02fea30d0df6e88"
+          }
+        },
+        {
+          "client_id": "464019033663-olrb4jbm8dm49f99i46v21k2t5nkmp3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPy6SLLTF4-yGUibcIJzzCL3jqa98eD4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464019033663-olrb4jbm8dm49f99i46v21k2t5nkmp3h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "464019033663-1q2sc059mqmrri3s75ndi66bru5jnos0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodzzz"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

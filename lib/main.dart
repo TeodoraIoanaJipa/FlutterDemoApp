@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodzzz/database_helper.dart';
+import 'package:foodzzz/login.dart';
 import 'package:foodzzz/model/reservation.dart';
 import 'package:foodzzz/model/restaurant.dart';
 import 'package:foodzzz/restaurant_detail_page.dart';
@@ -9,6 +10,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as Path;
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding
@@ -21,7 +23,7 @@ class FoodZApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'FoodZzz',
-      home: new RestaurantsList(),
+      home: SignInDemo(),
     );
   }
 }
